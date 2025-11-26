@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>客户 & 展会信息管理 - Krista CRM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "PingFang SC", "Microsoft Yahei", sans-serif;
+    }
+    body {
+      margin: 0;
+      background: #f5f7fb;
+      color: #222;
+    }
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 16px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+    }
+    header span {
+      font-size: 12px;
+      color: #666;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      grid-gap: 16px;
+    }
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      margin-bottom: 12px;
+    }
+    .card-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .card-title small {
+      font-weight: 400;
+      color: #999;
+      font-size: 12px;
+    }
+    label {
+      font-size: 12px;
+      color: #555;
+      display: block;
+      margin-bottom: 3px;
+    }
+    input[type="text"],
+    input[type="url"],
+    input[type="date"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 12px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      outline: none;
+      background: #f9fafb;
+    }
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #6366f1;
+      background: #fff;
+      box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.15);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 48px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-gap: 8px;
+      margin-bottom: 6px;
+    }
+    .row-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-gap: 8px;
+      margin-bottom: 6px;
+    }
+    .row-1 {
+      margin-bottom: 6px;
+    }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: #4f46e5;
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+    .btn-danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    .btn-ghost {
+      background: transparent;
+      color: #6b7280;
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #eef2ff;
+      color: #4f46e5;
+      margin-left: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    th,
+    td {
+      padding: 6px 4px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      background: #f9fafb;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tbody tr:nth-child(even) {
+      background: #f9fafb;
+    }
+    .table-wrapper {
+      max-height: 260px;
+      overflow: auto;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      margin-top: 4px;
+    }
+    .pill {
+      border-radius: 999px;
+      padding: 2px 6px;
+      background: #ecfdf3;
+      color: #166534;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .pill.warn {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .pill.danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+    .pill.gray {
+      background: #e5e7eb;
+      color: #374151;
+    }
+    .pill.level-A { background:#fee2e2; color:#b91c1c; }
+    .pill.level-B { background:#ffedd5; color:#c05621; }
+    .pill.level-C { background:#e0f2fe; color:#075985; }
+    .pill.level-D { background:#e5e7eb; color:#374151; }
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+    .small-text {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    .link {
+      color: #4f46e5;
+      text-decoration: none;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+    .highlight {
+      background: #fef3c7;
+    }
+    .checkbox {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      margin-top: 2px;
+    }
+    input[type="checkbox"] {
+      width: 13px;
+      height: 13px;
+    }
+    .section-tag {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+    .select-company {
+      font-size: 12px;
+      min-width: 180px;
+    }
+    .chips {
+      display:flex;
+      flex-wrap:wrap;
+      gap:4px;
+    }
+    .chip {
+      padding:2px 6px;
+      border-radius:999px;
+      background:#e5e7eb;
+      font-size:10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Krista 客户 & 展会信息管理</h1>
+        <span>数据保存在本地浏览器 · 可导出表格 · 适合 GitHub Pages 静态部署</span>
+      </div>
+      <div class="small-text">
+        <span id="summary-counts"></span>
+      </div>
+    </header>
+
+    <div class="layout">
+      <!-- 左侧：表单输入与数据列表 -->
+      <div>
+        <!-- 公司信息 -->
+        <div class="card">
+          <div class="card-title">
+            <div>
+              公司信息
+              <span class="badge">公司维度</span>
+            </div>
+            <button class="btn btn-secondary" id="btn-reset-company-form">清空表单</button>
+          </div>
+          <form id="company-form">
+            <input type="hidden" id="company-id" />
+            <div class="row">
+              <div>
+                <label>公司中文全称</label>
+                <input type="text" id="company-name-zh" required />
+              </div>
+              <div>
+                <label>公司英文全称</label>
+                <input type="text" id="company-name-en" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>官网网址</label>
+                <input type="url" id="company-website" placeholder="https://..." />
+              </div>
+              <div>
+                <label>所属行业 / 行业细分</label>
+                <input
+                  type="text"
+                  id="company-industry"
+                  placeholder="例如：光伏 / 支架 + 组件"
+                />
+              </div>
+            </div>
+            <div class="row-3">
+              <div>
+                <label>省份</label>
+                <input type="text" id="company-province" placeholder="自动识别或手填" />
+              </div>
+              <div>
+                <label>城市</label>
+                <input type="text" id="company-city" />
+              </div>
+              <div>
+                <label>区 / 县</label>
+                <input type="text" id="company-district" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>客户来源</label>
+                <select id="company-source">
+                  <option value="电话开发">电话开发</option>
+                  <option value="展会拜访">展会拜访</option>
+                  <option value="资源分配">资源分配</option>
+                  <option value="离职继承">离职继承</option>
+                </select>
+              </div>
+              <div>
+                <label>备注（可写客户背景、合作情况等）</label>
+                <input type="text" id="company-notes" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>客户等级</label>
+                <select id="company-level">
+                  <option value="A">A 类客户</option>
+                  <option value="B">B 类客户</option>
+                  <option value="C" selected>C 类客户</option>
+                  <option value="D">D 类客户</option>
+                </select>
+              </div>
+            </div>
+            <div class="toolbar">
+              <button type="submit" class="btn btn-primary" id="btn-save-company">
+                保存公司
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                id="btn-delete-company"
+                disabled
+              >
+                删除当前公司
+              </button>
+              <span class="small-text"
+                >提示：输入中文公司名时，会自动尝试识别「省 / 市」。</span
+              >
+            </div>
+          </form>
+
+          <!-- 筛选条 -->
+          <div class="card-title" style="margin-top: 4px;">
+            <div>
+              公司列表
+              <span class="section-tag">下面可按城市 / 行业 / 等级 / 展会筛选</span>
+            </div>
+            <select id="active-company-select" class="select-company"></select>
+          </div>
+
+          <div class="toolbar" style="margin-bottom:8px;">
+            <input type="text" id="filter-keyword" placeholder="搜索公司 / 联系人" />
+            <select id="filter-city">
+              <option value="">全部城市</option>
+            </select>
+            <select id="filter-industry">
+              <option value="">全部行业</option>
+            </select>
+            <select id="filter-level">
+              <option value="">全部等级</option>
+              <option value="A">A 类</option>
+              <option value="B">B 类</option>
+              <option value="C">C 类</option>
+              <option value="D">D 类</option>
+            </select>
+            <select id="filter-important">
+              <option value="">全部客户</option>
+              <option value="true">仅有重点联系人的公司</option>
+            </select>
+            <select id="filter-exhibition">
+              <option value="">全部展会</option>
+            </select>
+          </div>
+
+          <!-- 公司列表 -->
+          <div class="table-wrapper" id="company-table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>公司</th>
+                  <th>行业</th>
+                  <th>地区</th>
+                  <th>等级</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="company-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 联系人与展会 -->
+        <div class="card">
+          <div class="card-title">
+            <div>
+              联系人信息
+              <span class="badge">联系人维度</span>
+            </div>
+            <button class="btn btn-secondary" id="btn-reset-contact-form">清空表单</button>
+          </div>
+          <form id="contact-form">
+            <input type="hidden" id="contact-id" />
+            <div class="row">
+              <div>
+                <label>所属公司</label>
+                <select id="contact-company-select" required></select>
+              </div>
+              <div>
+                <label>姓名 & 职位</label>
+                <input
+                  type="text"
+                  id="contact-name-title"
+                  placeholder="例如：张三 / 市场总监"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row-3">
+              <div>
+                <label>部门座机</label>
+                <input type="text" id="contact-phone" />
+              </div>
+              <div>
+                <label>手机</label>
+                <input type="text" id="contact-mobile" />
+              </div>
+              <div>
+                <label>微信号</label>
+                <input type="text" id="contact-wechat" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>邮箱</label>
+                <input type="email" id="contact-email" />
+              </div>
+              <div>
+                <label>名片（备注：名片路径 / 存放位置）</label>
+                <input
+                  type="text"
+                  id="contact-card"
+                  placeholder="例如：文件夹路径 / 手机相册"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>沟通偏好</label>
+                <input
+                  type="text"
+                  id="contact-preference"
+                  placeholder="例如：偏电话沟通，上午 10:00-12:00 比较方便"
+                />
+              </div>
+              <div>
+                <label>个人生活情况</label>
+                <input
+                  type="text"
+                  id="contact-life"
+                  placeholder="例如：已婚有一女，喜欢滑雪 / 养狗"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>生日</label>
+                <input type="date" id="contact-birthday" />
+              </div>
+              <div>
+                <label>任职经历</label>
+                <input
+                  type="text"
+                  id="contact-history"
+                  placeholder="例如：原 XXX 光伏市场总监"
+                />
+              </div>
+            </div>
+            <div class="row-1">
+              <label>是否为重点客户</label>
+              <div class="checkbox">
+                <input type="checkbox" id="contact-is-key" />
+                <span>勾选表示重点维护对象</span>
+              </div>
+            </div>
+
+            <div class="row-1">
+              <label>负责展会（勾选即可关联 / 取消）</label>
+              <div id="contact-exhibitions-list" class="small-text">
+                当前公司暂无展会，可先在下方「展会信息」中新增。
+              </div>
+            </div>
+
+            <div class="toolbar">
+              <button type="submit" class="btn btn-primary" id="btn-save-contact">
+                保存联系人
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                id="btn-delete-contact"
+                disabled
+              >
+                删除联系人
+              </button>
+              <span class="small-text"
+                >提示：一个公司下可以有多位联系人，勾选展会即可分配负责人。</span
+              >
+            </div>
+          </form>
+
+          <!-- 联系人列表 -->
+          <div class="card-title" style="margin-top: 4px;">
+            <div>
+              当前公司联系人列表
+              <span class="section-tag">上方下拉框选择公司后自动切换</span>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>姓名 / 职位</th>
+                  <th>联系方式</th>
+                  <th>生日</th>
+                  <th>重点</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="contact-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div>
+              展会信息
+              <span class="badge">展会维度</span>
+            </div>
+            <button class="btn btn-secondary" id="btn-reset-exhibition-form">
+              清空表单
+            </button>
+          </div>
+          <form id="exhibition-form">
+            <input type="hidden" id="exhibition-id" />
+            <div class="row">
+              <div>
+                <label>所属公司</label>
+                <select id="exhibition-company-select" required></select>
+              </div>
+              <div>
+                <label>展会中文名称 + 英文缩写</label>
+                <input
+                  type="text"
+                  id="exhibition-name"
+                  placeholder="例如：上海孕婴童展 CBME"
+                  required
+                />
+              </div>
+            </div>
+            <div class="row-3">
+              <div>
+                <label>展会开始日期</label>
+                <input type="date" id="exhibition-start" required />
+              </div>
+              <div>
+                <label>展会结束日期</label>
+                <input type="date" id="exhibition-end" required />
+              </div>
+              <div>
+                <label>筹备开始日期（默认自动提前 3 个月）</label>
+                <input type="date" id="exhibition-prep" />
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <label>展会地区 / 地点</label>
+                <input
+                  type="text"
+                  id="exhibition-location"
+                  placeholder="例如：上海 / 国家会展中心"
+                />
+              </div>
+              <div>
+                <label>负责人（可多选）</label>
+                <select id="exhibition-owners" multiple size="3"></select>
+                <span class="small-text"
+                  >按住 Ctrl / ⌘ 可多选；选项为该公司下的联系人。</span
+                >
+              </div>
+            </div>
+            <div class="toolbar">
+              <button type="submit" class="btn btn-primary" id="btn-save-exhibition">
+                保存展会
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                id="btn-delete-exhibition"
+                disabled
+              >
+                删除展会
+              </button>
+              <span class="small-text"
+                >提示：展会只需添加一次，负责人可在这里多选；也可在联系人处勾选负责展会。</span
+              >
+            </div>
+          </form>
+
+          <div class="card-title" style="margin-top: 4px;">
+            <div>
+              当前公司展会列表
+              <span class="section-tag">自动显示该公司下所有展会</span>
+            </div>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>展会</th>
+                  <th>时间</th>
+                  <th>筹备</th>
+                  <th>负责人</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="exhibition-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：提醒与导出 -->
+      <div>
+        <div class="card">
+          <div class="card-title">
+            <div>
+              提醒中心
+              <span class="badge">生日 & 展会筹备</span>
+            </div>
+          </div>
+          <div>
+            <div class="small-text" style="margin-bottom: 6px;">
+              默认查看未来 30 天内的关键事项（你可以在代码中自由调整天数）。
+            </div>
+            <div>
+              <strong style="font-size: 13px;">即将到来的生日</strong>
+              <ul id="birthday-reminders" class="small-text"></ul>
+            </div>
+            <div style="margin-top: 8px;">
+              <strong style="font-size: 13px;">展会筹备提醒</strong>
+              <ul id="prep-reminders" class="small-text"></ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div>
+              数据导出 / 备份
+              <span class="badge">仅本地浏览器存储</span>
+            </div>
+          </div>
+          <div class="toolbar" style="margin-bottom: 8px;">
+            <button class="btn btn-primary" id="btn-export-json">
+              导出全部数据（JSON）
+            </button>
+            <input
+              type="file"
+              id="import-json-input"
+              accept=".json"
+              style="display: none;"
+            />
+            <button class="btn btn-secondary" id="btn-import-json">
+              导入数据（JSON）
+            </button>
+          </div>
+          <div class="toolbar">
+            <button class="btn btn-secondary" id="btn-export-companies-csv">
+              导出公司表格（CSV）
+            </button>
+            <button class="btn btn-secondary" id="btn-export-contacts-csv">
+              导出联系人表格（CSV）
+            </button>
+            <button class="btn btn-secondary" id="btn-export-exhibitions-csv">
+              导出展会表格（CSV）
+            </button>
+          </div>
+          <div class="small-text" style="margin-top: 8px;">
+            · JSON 适合做完整备份 / 恢复；<br />
+            · CSV 可以用 Excel 打开做二次处理；<br />
+            · 所有数据保存在浏览器
+            <code>localStorage</code> 中，不会上传到任何服务器。
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <div>使用小贴士</div>
+          </div>
+          <div class="small-text">
+            <ul>
+              <li>先添加公司，再为公司添加联系人和展会。</li>
+              <li>展会只需添加一次；可以在展会里为它选负责人，也可以在联系人里给 TA 勾选负责展会。</li>
+              <li>联系人跳槽时，可以在「任职经历」里记录原公司，再调整展会负责人。</li>
+              <li>如果数据太多，可以定期导出 JSON 做本地备份，换电脑时导入即可。</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "krista_crm_v2";
+
+    let state = {
+      companies: [],
+      contacts: [],
+      exhibitions: []
+    };
+
+    function generateId() {
+      return (
+        "id_" +
+        Date.now().toString(36) +
+        "_" +
+        Math.random().toString(36).substring(2, 8)
+      );
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      renderSummary();
+      renderAll();
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        try {
+          state = JSON.parse(raw);
+        } catch (e) {
+          console.error("数据解析失败，使用空白状态", e);
+        }
+      } else {
+        // 如果旧版本数据存在，尝试迁移
+        const old = localStorage.getItem("krista_crm_v1");
+        if (old) {
+          try {
+            state = JSON.parse(old);
+          } catch {}
+        }
+      }
+    }
+
+    const CN_REGIONS = [
+      "北京","上海","天津","重庆","河北","山西","辽宁","吉林","黑龙江",
+      "江苏","浙江","安徽","福建","江西","山东","河南","湖北","湖南",
+      "广东","广西","海南","四川","贵州","云南","西藏","陕西","甘肃",
+      "青海","宁夏","新疆","内蒙古"
+    ];
+
+    const CN_CITIES = [
+      "北京","上海","广州","深圳","苏州","无锡","南京","杭州","合肥",
+      "成都","重庆","武汉","西安","郑州","长沙","青岛","济南","福州",
+      "厦门","南昌","宁波","温州","石家庄","太原","沈阳","大连","长春",
+      "哈尔滨","南宁","昆明","贵阳","兰州"
+    ];
+
+    function autoFillRegionFromName(nameZh) {
+      if (!nameZh) return;
+      const provinceInput = document.getElementById("company-province");
+      const cityInput = document.getElementById("company-city");
+      let foundProvince = "";
+      for (const p of CN_REGIONS) {
+        if (nameZh.includes(p)) {
+          foundProvince = p + (["北京","上海","天津","重庆"].includes(p) ? "市" : "省");
+          break;
+        }
+      }
+      let foundCity = "";
+      for (const c of CN_CITIES) {
+        if (nameZh.includes(c)) {
+          foundCity = c + "市";
+          break;
+        }
+      }
+      if (foundProvince && !provinceInput.value) provinceInput.value = foundProvince;
+      if (foundCity && !cityInput.value) cityInput.value = foundCity;
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      if (Number.isNaN(d.getTime())) return dateStr;
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}.${m}.${day}`;
+    }
+
+    function computePrepDate(startDateStr) {
+      if (!startDateStr) return "";
+      const d = new Date(startDateStr);
+      if (Number.isNaN(d.getTime())) return "";
+      d.setMonth(d.getMonth() - 3);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function daysBetween(dateStr) {
+      const d = new Date(dateStr);
+      if (Number.isNaN(d.getTime())) return null;
+      const today = new Date();
+      const oneDay = 1000 * 60 * 60 * 24;
+      return Math.round((d.setHours(0, 0, 0, 0) - today.setHours(0, 0, 0, 0)) / oneDay);
+    }
+
+    function downloadFile(content, fileName, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function toCSV(rows) {
+      return rows
+        .map((row) =>
+          row
+            .map((cell) => {
+              if (cell == null) return "";
+              const str = String(cell);
+              if (str.includes('"') || str.includes(",") || str.includes("\n")) {
+                return '"' + str.replace(/"/g, '""') + '"';
+              }
+              return str;
+            })
+            .join(",")
+        )
+        .join("\n");
+    }
+
+    function renderSummary() {
+      const companiesCount = state.companies.length;
+      const contactsCount = state.contacts.length;
+      const exhibitionsCount = state.exhibitions.length;
+      document.getElementById(
+        "summary-counts"
+      ).textContent = `公司：${companiesCount} · 联系人：${contactsCount} · 展会：${exhibitionsCount}`;
+    }
+
+    function renderCompanySelects() {
+      const activeSelect = document.getElementById("active-company-select");
+      const contactCompanySelect = document.getElementById("contact-company-select");
+      const exhibitionCompanySelect = document.getElementById("exhibition-company-select");
+
+      [activeSelect, contactCompanySelect, exhibitionCompanySelect].forEach(
+        (select) => {
+          select.innerHTML = "";
+          if (state.companies.length === 0) {
+            const opt = document.createElement("option");
+            opt.value = "";
+            opt.textContent = "暂无公司，请先新增";
+            select.appendChild(opt);
+          } else {
+            state.companies.forEach((c) => {
+              const opt = document.createElement("option");
+              opt.value = c.id;
+              opt.textContent = c.nameZh + (c.city ? `（${c.city}）` : "");
+              select.appendChild(opt);
+            });
+          }
+        }
+      );
+    }
+
+    function getActiveCompanyId() {
+      const select = document.getElementById("active-company-select");
+      return select.value || (state.companies[0] && state.companies[0].id) || "";
+    }
+
+    function levelPill(level) {
+      const cls = "pill level-" + (level || "C");
+      const text =
+        level === "A" ? "A 类" :
+        level === "B" ? "B 类" :
+        level === "D" ? "D 类" : "C 类";
+      return `<span class="${cls}">${text}</span>`;
+    }
+
+    function applyCompanyFilters(companies) {
+      const keyword = document.getElementById("filter-keyword").value.trim();
+      const city = document.getElementById("filter-city").value;
+      const industry = document.getElementById("filter-industry").value;
+      const level = document.getElementById("filter-level").value;
+      const important = document.getElementById("filter-important").value;
+      const exhibitionName = document.getElementById("filter-exhibition").value;
+
+      return companies.filter((c) => {
+        // 关键词：公司名 / 联系人名
+        if (keyword) {
+          const contactNames = state.contacts
+            .filter(ct => ct.companyId === c.id)
+            .map(ct => ct.nameTitle)
+            .join(" ");
+          if (
+            !c.nameZh.includes(keyword) &&
+            !(c.nameEn || "").toLowerCase().includes(keyword.toLowerCase()) &&
+            !contactNames.includes(keyword)
+          ) return false;
+        }
+
+        if (city && c.city !== city) return false;
+        if (industry && c.industry !== industry) return false;
+        if (level && (c.level || "C") !== level) return false;
+
+        if (important === "true") {
+          const hasKey = state.contacts.some(
+            ct => ct.companyId === c.id && ct.isKey
+          );
+          if (!hasKey) return false;
+        }
+
+        if (exhibitionName) {
+          const related = state.exhibitions.some(
+            ex => ex.companyId === c.id && ex.name === exhibitionName
+          );
+          if (!related) return false;
+        }
+
+        return true;
+      });
+    }
+
+    function renderFilterOptions() {
+      const citySelect = document.getElementById("filter-city");
+      const industrySelect = document.getElementById("filter-industry");
+      const exhibitionSelect = document.getElementById("filter-exhibition");
+
+      // 城市
+      const cities = Array.from(
+        new Set(state.companies.map(c => c.city).filter(Boolean))
+      ).sort();
+      citySelect.innerHTML = '<option value="">全部城市</option>';
+      cities.forEach(city => {
+        const opt = document.createElement("option");
+        opt.value = city;
+        opt.textContent = city;
+        citySelect.appendChild(opt);
+      });
+
+      // 行业
+      const industries = Array.from(
+        new Set(state.companies.map(c => c.industry).filter(Boolean))
+      ).sort();
+      industrySelect.innerHTML = '<option value="">全部行业</option>';
+      industries.forEach(ind => {
+        const opt = document.createElement("option");
+        opt.value = ind;
+        opt.textContent = ind;
+        industrySelect.appendChild(opt);
+      });
+
+      // 展会（按名称）
+      const exNames = Array.from(
+        new Set(state.exhibitions.map(ex => ex.name).filter(Boolean))
+      ).sort();
+      exhibitionSelect.innerHTML = '<option value="">全部展会</option>';
+      exNames.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        exhibitionSelect.appendChild(opt);
+      });
+    }
+
+    function renderCompaniesTable() {
+      const tbody = document.getElementById("company-table-body");
+      tbody.innerHTML = "";
+
+      const filteredCompanies = applyCompanyFilters(state.companies);
+
+      filteredCompanies.forEach((c) => {
+        const tr = document.createElement("tr");
+        const regionText = [c.province, c.city, c.district]
+          .filter(Boolean)
+          .join(" / ");
+
+        tr.innerHTML = `
+          <td>
+            <div>${c.nameZh}</div>
+            <div class="small-text">${c.nameEn || ""}</div>
+            ${
+              c.website
+                ? `<a class="link small-text" href="${c.website}" target="_blank">官网</a>`
+                : ""
+            }
+          </td>
+          <td>${c.industry || ""}</td>
+          <td>${regionText}</td>
+          <td>${levelPill(c.level || "C")}</td>
+          <td>
+            <button class="btn btn-ghost" data-action="edit" data-id="${c.id}">编辑</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll("button[data-action='edit']").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          loadCompanyToForm(id);
+        });
+      });
+    }
+
+    function renderContactsTable() {
+      const tbody = document.getElementById("contact-table-body");
+      tbody.innerHTML = "";
+      const activeCompanyId = getActiveCompanyId();
+      const contacts = state.contacts.filter((ct) => ct.companyId === activeCompanyId);
+      contacts.forEach((ct) => {
+        const tr = document.createElement("tr");
+        const emailPart = ct.email ? `<div>${ct.email}</div>` : "";
+        tr.innerHTML = `
+          <td>
+            <div>${ct.nameTitle}</div>
+            <div class="small-text">${ct.history || ""}</div>
+          </td>
+          <td class="small-text">
+            ${ct.mobile || ""}${ct.wechat ? " / Wx: " + ct.wechat : ""}<br />${emailPart}
+          </td>
+          <td>${ct.birthday ? formatDate(ct.birthday) : ""}</td>
+          <td>
+            ${
+              ct.isKey
+                ? `<span class="pill"><span class="pill-dot"></span>重点</span>`
+                : `<span class="pill gray">普通</span>`
+            }
+          </td>
+          <td>
+            <button class="btn btn-ghost" data-action="edit-contact" data-id="${
+              ct.id
+            }">编辑</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll("button[data-action='edit-contact']").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          loadContactToForm(id);
+        });
+      });
+    }
+
+    function renderExhibitionsTable() {
+      const tbody = document.getElementById("exhibition-table-body");
+      tbody.innerHTML = "";
+      const activeCompanyId = getActiveCompanyId();
+      const exhibitions = state.exhibitions.filter(
+        (ex) => ex.companyId === activeCompanyId
+      );
+      exhibitions.forEach((ex) => {
+        const tr = document.createElement("tr");
+        const owners =
+          ex.ownerIds && ex.ownerIds.length
+            ? ex.ownerIds
+                .map((id) => {
+                  const c = state.contacts.find((ct) => ct.id === id);
+                  return c ? c.nameTitle : "";
+                })
+                .filter(Boolean)
+                .join(" / ")
+            : "未设置";
+        const prepDays = ex.prep ? daysBetween(ex.prep) : null;
+        let prepPill = "";
+        if (ex.prep) {
+          if (prepDays < 0) {
+            prepPill = `<span class="pill danger">已过筹备期 ${formatDate(
+              ex.prep
+            )}</span>`;
+          } else if (prepDays <= 7) {
+            prepPill = `<span class="pill warn">筹备期 ${formatDate(
+              ex.prep
+            )} · ${prepDays} 天内</span>`;
+          } else {
+            prepPill = `<span class="pill">筹备期 ${formatDate(ex.prep)}</span>`;
+          }
+        }
+        tr.innerHTML = `
+          <td>
+            <div>${ex.name}</div>
+            <div class="small-text">${ex.location || ""}</div>
+          </td>
+          <td>${formatDate(ex.start)} - ${formatDate(ex.end)}</td>
+          <td>${prepPill}</td>
+          <td class="small-text">${owners}</td>
+          <td>
+            <button class="btn btn-ghost" data-action="edit-exhibition" data-id="${
+              ex.id
+            }">编辑</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody
+        .querySelectorAll("button[data-action='edit-exhibition']")
+        .forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const id = btn.getAttribute("data-id");
+            loadExhibitionToForm(id);
+          });
+        });
+    }
+
+    function renderReminders() {
+      const birthdayUl = document.getElementById("birthday-reminders");
+      const prepUl = document.getElementById("prep-reminders");
+      birthdayUl.innerHTML = "";
+      prepUl.innerHTML = "";
+      const windowDays = 30;
+
+      const today = new Date();
+      const thisYear = today.getFullYear();
+      const birthdayItems = [];
+      state.contacts.forEach((ct) => {
+        if (!ct.birthday) return;
+        const b = new Date(ct.birthday);
+        if (Number.isNaN(b.getTime())) return;
+        const nextBirthday = new Date(thisYear, b.getMonth(), b.getDate());
+        if (nextBirthday < today) nextBirthday.setFullYear(thisYear + 1);
+        const diffDays = Math.round(
+          (nextBirthday.setHours(0, 0, 0, 0) -
+            today.setHours(0, 0, 0, 0)) /
+            (1000 * 60 * 60 * 24)
+        );
+        if (diffDays <= windowDays) {
+          birthdayItems.push({
+            contact: ct,
+            days: diffDays,
+            date: nextBirthday
+          });
+        }
+      });
+
+      birthdayItems
+        .sort((a, b) => a.days - b.days)
+        .forEach(({ contact, days, date }) => {
+          const li = document.createElement("li");
+          const com = state.companies.find((c) => c.id === contact.companyId);
+          const dStr = `${date.getMonth() + 1}月${date.getDate()}日`;
+          li.innerHTML = `
+            <span class="${days <= 7 ? "highlight" : ""}">${contact.nameTitle}</span>（${com ? com.nameZh : "未知公司"}）生日：${dStr} · ${
+            days === 0 ? "今天" : days + "天后"
+          }
+          `;
+          birthdayUl.appendChild(li);
+        });
+      if (birthdayItems.length === 0) {
+        birthdayUl.innerHTML = "<li>未来 30 天暂无生日提醒。</li>";
+      }
+
+      const prepItems = [];
+      state.exhibitions.forEach((ex) => {
+        if (!ex.prep) return;
+        const d = new Date(ex.prep);
+        if (Number.isNaN(d.getTime())) return;
+        const diffDays = Math.round(
+          (d.setHours(0, 0, 0, 0) -
+            today.setHours(0, 0, 0, 0)) /
+            (1000 * 60 * 60 * 24)
+        );
+        if (diffDays <= windowDays) {
+          prepItems.push({
+            ex,
+            days: diffDays,
+            date: d
+          });
+        }
+      });
+      prepItems
+        .sort((a, b) => a.days - b.days)
+        .forEach(({ ex, days, date }) => {
+          const com = state.companies.find((c) => c.id === ex.companyId);
+          const dStr = `${date.getMonth() + 1}月${date.getDate()}日`;
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <span class="${days <= 7 ? "highlight" : ""}">${com ? com.nameZh : ""} · ${
+            ex.name
+          }</span> 筹备开始：${dStr} · ${
+            days < 0 ? "已过期 " + Math.abs(days) + " 天" : days + " 天后"
+          }
+          `;
+          prepUl.appendChild(li);
+        });
+      if (prepItems.length === 0) {
+        prepUl.innerHTML = "<li>未来 30 天内暂无需要开始筹备的展会。</li>";
+      }
+    }
+
+    function renderAll() {
+      renderCompanySelects();
+      renderFilterOptions();
+      renderCompaniesTable();
+      renderContactsTable();
+      renderExhibitionsTable();
+      renderContactExhibitionsOptions();
+      renderReminders();
+    }
+
+    // -------- 表单重置 / 载入 --------
+
+    function resetCompanyForm() {
+      document.getElementById("company-id").value = "";
+      document.getElementById("company-name-zh").value = "";
+      document.getElementById("company-name-en").value = "";
+      document.getElementById("company-website").value = "";
+      document.getElementById("company-industry").value = "";
+      document.getElementById("company-province").value = "";
+      document.getElementById("company-city").value = "";
+      document.getElementById("company-district").value = "";
+      document.getElementById("company-source").value = "电话开发";
+      document.getElementById("company-notes").value = "";
+      document.getElementById("company-level").value = "C";
+      document.getElementById("btn-delete-company").disabled = true;
+      document.getElementById("btn-save-company").textContent = "保存公司";
+    }
+
+    function loadCompanyToForm(id) {
+      const company = state.companies.find((c) => c.id === id);
+      if (!company) return;
+      document.getElementById("company-id").value = company.id;
+      document.getElementById("company-name-zh").value = company.nameZh || "";
+      document.getElementById("company-name-en").value = company.nameEn || "";
+      document.getElementById("company-website").value = company.website || "";
+      document.getElementById("company-industry").value = company.industry || "";
+      document.getElementById("company-province").value = company.province || "";
+      document.getElementById("company-city").value = company.city || "";
+      document.getElementById("company-district").value = company.district || "";
+      document.getElementById("company-source").value = company.source || "电话开发";
+      document.getElementById("company-notes").value = company.notes || "";
+      document.getElementById("company-level").value = company.level || "C";
+      document.getElementById("btn-delete-company").disabled = false;
+      document.getElementById("btn-save-company").textContent = "更新公司";
+      document.getElementById("active-company-select").value = company.id;
+      renderContactsTable();
+      renderExhibitionsTable();
+      renderContactExhibitionsOptions();
+      renderReminders();
+    }
+
+    function resetContactForm() {
+      document.getElementById("contact-id").value = "";
+      const companySelect = document.getElementById("contact-company-select");
+      const activeId = getActiveCompanyId();
+      if (activeId) companySelect.value = activeId;
+      document.getElementById("contact-name-title").value = "";
+      document.getElementById("contact-phone").value = "";
+      document.getElementById("contact-mobile").value = "";
+      document.getElementById("contact-wechat").value = "";
+      document.getElementById("contact-email").value = "";
+      document.getElementById("contact-card").value = "";
+      document.getElementById("contact-preference").value = "";
+      document.getElementById("contact-life").value = "";
+      document.getElementById("contact-birthday").value = "";
+      document.getElementById("contact-history").value = "";
+      document.getElementById("contact-is-key").checked = false;
+      document.getElementById("btn-delete-contact").disabled = true;
+      document.getElementById("btn-save-contact").textContent = "保存联系人";
+      renderContactExhibitionsOptions();
+    }
+
+    function loadContactToForm(id) {
+      const ct = state.contacts.find((c) => c.id === id);
+      if (!ct) return;
+      document.getElementById("contact-id").value = ct.id;
+      document.getElementById("contact-company-select").value = ct.companyId;
+      document.getElementById("contact-name-title").value = ct.nameTitle || "";
+      document.getElementById("contact-phone").value = ct.phone || "";
+      document.getElementById("contact-mobile").value = ct.mobile || "";
+      document.getElementById("contact-wechat").value = ct.wechat || "";
+      document.getElementById("contact-email").value = ct.email || "";
+      document.getElementById("contact-card").value = ct.card || "";
+      document.getElementById("contact-preference").value = ct.preference || "";
+      document.getElementById("contact-life").value = ct.life || "";
+      document.getElementById("contact-birthday").value = ct.birthday || "";
+      document.getElementById("contact-history").value = ct.history || "";
+      document.getElementById("contact-is-key").checked = !!ct.isKey;
+      document.getElementById("btn-delete-contact").disabled = false;
+      document.getElementById("btn-save-contact").textContent = "更新联系人";
+      renderContactExhibitionsOptions(ct.id);
+    }
+
+    function resetExhibitionForm() {
+      document.getElementById("exhibition-id").value = "";
+      const companySelect = document.getElementById("exhibition-company-select");
+      const activeId = getActiveCompanyId();
+      if (activeId) companySelect.value = activeId;
+      document.getElementById("exhibition-name").value = "";
+      document.getElementById("exhibition-start").value = "";
+      document.getElementById("exhibition-end").value = "";
+      document.getElementById("exhibition-prep").value = "";
+      document.getElementById("exhibition-location").value = "";
+      document.getElementById("exhibition-owners").innerHTML = "";
+      refreshExhibitionOwnersOptions();
+      document.getElementById("btn-delete-exhibition").disabled = true;
+      document.getElementById("btn-save-exhibition").textContent = "保存展会";
+    }
+
+    function loadExhibitionToForm(id) {
+      const ex = state.exhibitions.find((e) => e.id === id);
+      if (!ex) return;
+      document.getElementById("exhibition-id").value = ex.id;
+      document.getElementById("exhibition-company-select").value = ex.companyId;
+      document.getElementById("exhibition-name").value = ex.name || "";
+      document.getElementById("exhibition-start").value = ex.start || "";
+      document.getElementById("exhibition-end").value = ex.end || "";
+      document.getElementById("exhibition-prep").value = ex.prep || "";
+      document.getElementById("exhibition-location").value = ex.location || "";
+      refreshExhibitionOwnersOptions();
+      const ownersSelect = document.getElementById("exhibition-owners");
+      if (ex.ownerIds && ex.ownerIds.length) {
+        Array.from(ownersSelect.options).forEach((opt) => {
+          opt.selected = ex.ownerIds.includes(opt.value);
+        });
+      }
+      document.getElementById("btn-delete-exhibition").disabled = false;
+      document.getElementById("btn-save-exhibition").textContent = "更新展会";
+      renderContactExhibitionsOptions();
+    }
+
+    function refreshExhibitionOwnersOptions() {
+      const companyId =
+        document.getElementById("exhibition-company-select").value ||
+        getActiveCompanyId();
+      const ownersSelect = document.getElementById("exhibition-owners");
+      ownersSelect.innerHTML = "";
+      const contacts = state.contacts.filter((ct) => ct.companyId === companyId);
+      contacts.forEach((ct) => {
+        const opt = document.createElement("option");
+        opt.value = ct.id;
+        opt.textContent = ct.nameTitle;
+        ownersSelect.appendChild(opt);
+      });
+    }
+
+    function renderContactExhibitionsOptions(contactId) {
+      const div = document.getElementById("contact-exhibitions-list");
+      const companyId = document.getElementById("contact-company-select").value || getActiveCompanyId();
+      if (!companyId) {
+        div.textContent = "请先选择所属公司。";
+        return;
+      }
+      const exList = state.exhibitions.filter(ex => ex.companyId === companyId);
+      if (exList.length === 0) {
+        div.textContent = "当前公司暂无展会，可先在下方「展会信息」中新增。";
+        return;
+      }
+      const currentId = contactId || document.getElementById("contact-id").value;
+      div.innerHTML = "";
+      exList.forEach(ex => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "checkbox";
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.value = ex.id;
+        if (currentId && Array.isArray(ex.ownerIds) && ex.ownerIds.includes(currentId)) {
+          input.checked = true;
+        }
+        input.className = "contact-exhibition-checkbox";
+        const label = document.createElement("span");
+        label.innerHTML = `${ex.name}（${formatDate(ex.start)} - ${formatDate(ex.end)}）`;
+        wrapper.appendChild(input);
+        wrapper.appendChild(label);
+        div.appendChild(wrapper);
+      });
+    }
+
+    function updateContactExhibitionAssignments(contactId, companyId) {
+      const checkboxes = document.querySelectorAll("#contact-exhibitions-list .contact-exhibition-checkbox");
+      const selectedIds = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+      state.exhibitions
+        .filter(ex => ex.companyId === companyId)
+        .forEach(ex => {
+          if (!Array.isArray(ex.ownerIds)) ex.ownerIds = [];
+          if (selectedIds.includes(ex.id)) {
+            if (!ex.ownerIds.includes(contactId)) ex.ownerIds.push(contactId);
+          } else {
+            ex.ownerIds = ex.ownerIds.filter(id => id !== contactId);
+          }
+        });
+    }
+
+    // 事件绑定
+    function initEventListeners() {
+      document
+        .getElementById("company-name-zh")
+        .addEventListener("blur", (e) => {
+          autoFillRegionFromName(e.target.value.trim());
+        });
+
+      document
+        .getElementById("company-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const id = document.getElementById("company-id").value;
+          const company = {
+            id: id || generateId(),
+            nameZh: document.getElementById("company-name-zh").value.trim(),
+            nameEn: document.getElementById("company-name-en").value.trim(),
+            website: document.getElementById("company-website").value.trim(),
+            industry: document.getElementById("company-industry").value.trim(),
+            province: document.getElementById("company-province").value.trim(),
+            city: document.getElementById("company-city").value.trim(),
+            district: document.getElementById("company-district").value.trim(),
+            source: document.getElementById("company-source").value,
+            notes: document.getElementById("company-notes").value.trim(),
+            level: document.getElementById("company-level").value
+          };
+          if (!company.nameZh) {
+            alert("公司中文全称不能为空");
+            return;
+          }
+          if (id) {
+            const index = state.companies.findIndex((c) => c.id === id);
+            if (index !== -1) state.companies[index] = company;
+          } else {
+            state.companies.push(company);
+          }
+          saveState();
+          resetCompanyForm();
+        });
+
+      document
+        .getElementById("btn-reset-company-form")
+        .addEventListener("click", resetCompanyForm);
+
+      document
+        .getElementById("btn-delete-company")
+        .addEventListener("click", () => {
+          const id = document.getElementById("company-id").value;
+          if (!id) return;
+          if (!confirm("删除公司会同时删除该公司下的联系人和展会，确认删除？")) return;
+          state.companies = state.companies.filter((c) => c.id !== id);
+          state.contacts = state.contacts.filter((ct) => ct.companyId !== id);
+          state.exhibitions = state.exhibitions.filter(
+            (ex) => ex.companyId !== id
+          );
+          saveState();
+          resetCompanyForm();
+          resetContactForm();
+          resetExhibitionForm();
+        });
+
+      document
+        .getElementById("active-company-select")
+        .addEventListener("change", () => {
+          const activeId = getActiveCompanyId();
+          if (activeId) {
+            document.getElementById("contact-company-select").value = activeId;
+            document.getElementById("exhibition-company-select").value = activeId;
+            refreshExhibitionOwnersOptions();
+          }
+          renderContactsTable();
+          renderExhibitionsTable();
+          renderContactExhibitionsOptions();
+          renderReminders();
+        });
+
+      // 筛选事件
+      ["filter-keyword","filter-city","filter-industry","filter-level","filter-important","filter-exhibition"].forEach(id => {
+        document.getElementById(id).addEventListener("input", renderCompaniesTable);
+        document.getElementById(id).addEventListener("change", renderCompaniesTable);
+      });
+
+      document
+        .getElementById("contact-company-select")
+        .addEventListener("change", () => {
+          renderContactExhibitionsOptions();
+        });
+
+      document
+        .getElementById("contact-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          let id = document.getElementById("contact-id").value;
+          const companyId = document.getElementById("contact-company-select").value;
+          if (!companyId) {
+            alert("请先选择联系人所属公司");
+            return;
+          }
+          const nameTitle = document.getElementById("contact-name-title").value.trim();
+          if (!nameTitle) {
+            alert("请填写联系人姓名和职位");
+            return;
+          }
+          if (!id) id = generateId();
+          const contact = {
+            id,
+            companyId,
+            nameTitle,
+            phone: document.getElementById("contact-phone").value.trim(),
+            mobile: document.getElementById("contact-mobile").value.trim(),
+            wechat: document.getElementById("contact-wechat").value.trim(),
+            email: document.getElementById("contact-email").value.trim(),
+            card: document.getElementById("contact-card").value.trim(),
+            preference: document.getElementById("contact-preference").value.trim(),
+            life: document.getElementById("contact-life").value.trim(),
+            birthday: document.getElementById("contact-birthday").value,
+            history: document.getElementById("contact-history").value.trim(),
+            isKey: document.getElementById("contact-is-key").checked
+          };
+
+          const index = state.contacts.findIndex((c) => c.id === id);
+          if (index !== -1) {
+            state.contacts[index] = contact;
+          } else {
+            state.contacts.push(contact);
+          }
+
+          // 更新展会负责人
+          updateContactExhibitionAssignments(id, companyId);
+
+          saveState();
+          resetContactForm();
+        });
+
+      document
+        .getElementById("btn-reset-contact-form")
+        .addEventListener("click", resetContactForm);
+
+      document
+        .getElementById("btn-delete-contact")
+        .addEventListener("click", () => {
+          const id = document.getElementById("contact-id").value;
+          if (!id) return;
+          if (!confirm("确认删除该联系人？")) return;
+          state.contacts = state.contacts.filter((ct) => ct.id !== id);
+          state.exhibitions.forEach((ex) => {
+            if (Array.isArray(ex.ownerIds)) {
+              ex.ownerIds = ex.ownerIds.filter((cid) => cid !== id);
+            }
+          });
+          saveState();
+          resetContactForm();
+        });
+
+      document
+        .getElementById("exhibition-company-select")
+        .addEventListener("change", () => {
+          refreshExhibitionOwnersOptions();
+        });
+
+      document
+        .getElementById("exhibition-form")
+        .addEventListener("submit", (e) => {
+          e.preventDefault();
+          const id = document.getElementById("exhibition-id").value;
+          const companyId =
+            document.getElementById("exhibition-company-select").value;
+          const start = document.getElementById("exhibition-start").value;
+          const end = document.getElementById("exhibition-end").value;
+          const manualPrep = document.getElementById("exhibition-prep").value;
+          const prep = manualPrep || computePrepDate(start);
+
+          const ownersSelect = document.getElementById("exhibition-owners");
+          const ownerIds = Array.from(ownersSelect.selectedOptions).map(
+            (opt) => opt.value
+          );
+
+          const ex = {
+            id: id || generateId(),
+            companyId,
+            name: document.getElementById("exhibition-name").value.trim(),
+            start,
+            end,
+            prep,
+            location: document.getElementById("exhibition-location").value.trim(),
+            ownerIds
+          };
+
+          if (!companyId) {
+            alert("请先选择展会所属公司");
+            return;
+          }
+          if (!ex.name || !ex.start || !ex.end) {
+            alert("展会名称和时间不能为空");
+            return;
+          }
+          if (id) {
+            const index = state.exhibitions.findIndex((e2) => e2.id === id);
+            if (index !== -1) state.exhibitions[index] = ex;
+          } else {
+            state.exhibitions.push(ex);
+          }
+          saveState();
+          resetExhibitionForm();
+        });
+
+      document
+        .getElementById("btn-reset-exhibition-form")
+        .addEventListener("click", resetExhibitionForm);
+
+      document
+        .getElementById("btn-delete-exhibition")
+        .addEventListener("click", () => {
+          const id = document.getElementById("exhibition-id").value;
+          if (!id) return;
+          if (!confirm("确认删除该展会？")) return;
+          state.exhibitions = state.exhibitions.filter((ex) => ex.id !== id);
+          saveState();
+          resetExhibitionForm();
+          renderContactExhibitionsOptions();
+        });
+
+      // 导出 / 导入
+      document
+        .getElementById("btn-export-json")
+        .addEventListener("click", () => {
+          const content = JSON.stringify(state, null, 2);
+          const ts = new Date().toISOString().slice(0, 10);
+          downloadFile(
+            content,
+            `krista_crm_backup_${ts}.json`,
+            "application/json"
+          );
+        });
+
+      document
+        .getElementById("btn-import-json")
+        .addEventListener("click", () => {
+          document.getElementById("import-json-input").click();
+        });
+
+      document
+        .getElementById("import-json-input")
+        .addEventListener("change", (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const data = JSON.parse(event.target.result);
+              if (
+                !data ||
+                !Array.isArray(data.companies) ||
+                !Array.isArray(data.contacts) ||
+                !Array.isArray(data.exhibitions)
+              ) {
+                alert("JSON 结构不正确");
+                return;
+              }
+              if (!confirm("导入会覆盖当前所有数据，确认继续？")) return;
+              state = data;
+              saveState();
+              resetCompanyForm();
+              resetContactForm();
+              resetExhibitionForm();
+              alert("导入成功");
+            } catch (err) {
+              console.error(err);
+              alert("导入失败：JSON 解析错误");
+            }
+          };
+          reader.readAsText(file, "utf-8");
+        });
+
+      // 导出 CSV
+      document
+        .getElementById("btn-export-companies-csv")
+        .addEventListener("click", () => {
+          const header = [
+            "公司ID",
+            "公司中文名",
+            "公司英文名",
+            "官网",
+            "行业",
+            "省",
+            "市",
+            "区",
+            "来源",
+            "备注",
+            "等级"
+          ];
+          const rows = [header];
+          state.companies.forEach((c) => {
+            rows.push([
+              c.id,
+              c.nameZh,
+              c.nameEn,
+              c.website,
+              c.industry,
+              c.province,
+              c.city,
+              c.district,
+              c.source,
+              c.notes,
+              c.level || "C"
+            ]);
+          });
+          downloadFile(
+            toCSV(rows),
+            "krista_companies.csv",
+            "text/csv;charset=utf-8"
+          );
+        });
+
+      document
+        .getElementById("btn-export-contacts-csv")
+        .addEventListener("click", () => {
+          const header = [
+            "联系人ID",
+            "公司ID",
+            "公司名称",
+            "姓名与职位",
+            "部门座机",
+            "手机",
+            "微信号",
+            "邮箱",
+            "名片备注",
+            "沟通偏好",
+            "生活情况",
+            "生日",
+            "任职经历",
+            "是否重点"
+          ];
+          const rows = [header];
+          state.contacts.forEach((ct) => {
+            const company =
+              state.companies.find((c) => c.id === ct.companyId) || {};
+            rows.push([
+              ct.id,
+              ct.companyId,
+              company.nameZh || "",
+              ct.nameTitle,
+              ct.phone,
+              ct.mobile,
+              ct.wechat,
+              ct.email,
+              ct.card,
+              ct.preference,
+              ct.life,
+              ct.birthday,
+              ct.history,
+              ct.isKey ? "是" : "否"
+            ]);
+          });
+          downloadFile(
+            toCSV(rows),
+            "krista_contacts.csv",
+            "text/csv;charset=utf-8"
+          );
+        });
+
+      document
+        .getElementById("btn-export-exhibitions-csv")
+        .addEventListener("click", () => {
+          const header = [
+            "展会ID",
+            "公司ID",
+            "公司名称",
+            "展会名称",
+            "开始日期",
+            "结束日期",
+            "筹备开始日期",
+            "展会地点",
+            "负责人IDs",
+            "负责人名称"
+          ];
+          const rows = [header];
+          state.exhibitions.forEach((ex) => {
+            const company =
+              state.companies.find((c) => c.id === ex.companyId) || {};
+            const ownerNames = (ex.ownerIds || [])
+              .map((id) => {
+                const ct = state.contacts.find((c2) => c2.id === id);
+                return ct ? ct.nameTitle : "";
+              })
+              .filter(Boolean)
+              .join(" / ");
+            rows.push([
+              ex.id,
+              ex.companyId,
+              company.nameZh || "",
+              ex.name,
+              ex.start,
+              ex.end,
+              ex.prep,
+              ex.location,
+              (ex.ownerIds || []).join("|"),
+              ownerNames
+            ]);
+          });
+          downloadFile(
+            toCSV(rows),
+            "krista_exhibitions.csv",
+            "text/csv;charset=utf-8"
+          );
+        });
+    }
+
+    function bootstrap() {
+      loadState();
+
+      // 如果完全没有数据，给一条示例方便理解结构
+      if (state.companies.length === 0) {
+        const sampleCompanyId = generateId();
+        state.companies.push({
+          id: sampleCompanyId,
+          nameZh: "示例公司 - 华昱欣光伏科技有限公司",
+          nameEn: "Huayuxin Solar Technology Co., Ltd.",
+          website: "https://example.com",
+          industry: "光伏 / 支架 + 组件",
+          province: "上海市",
+          city: "上海市",
+          district: "青浦区",
+          source: "展会拜访",
+          notes: "示例数据，可删除",
+          level: "A"
+        });
+        const contactId = generateId();
+        state.contacts.push({
+          id: contactId,
+          companyId: sampleCompanyId,
+          nameTitle: "张三 / 市场总监",
+          phone: "021-88888888",
+          mobile: "13800000000",
+          wechat: "zhangsan-solar",
+          email: "zhangsan@example.com",
+          card: "手机相册 / 名片夹",
+          preference: "上午 10:00-12:00 电话沟通",
+          life: "已婚有一女，喜欢滑雪",
+          birthday: "1987-03-25",
+          history: "原 XXX 光伏市场经理",
+          isKey: true
+        });
+        const exId = generateId();
+        const today = new Date();
+        const start = new Date(today.getFullYear(), today.getMonth() + 2, 16);
+        const end = new Date(today.getFullYear(), today.getMonth() + 2, 18);
+        const toISO = (d) =>
+          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(
+            2,
+            "0"
+          )}-${String(d.getDate()).padStart(2, "0")}`;
+        state.exhibitions.push({
+          id: exId,
+          companyId: sampleCompanyId,
+          name: "上海孕婴童展 CBME",
+          start: toISO(start),
+          end: toISO(end),
+          prep: computePrepDate(toISO(start)),
+          location: "上海 · 国家会展中心",
+          ownerIds: [contactId]
+        });
+        saveState();
+      }
+
+      renderSummary();
+      renderAll();
+      initEventListeners();
+    }
+
+    document.addEventListener("DOMContentLoaded", bootstrap);
+  </script>
+</body>
+</html>
